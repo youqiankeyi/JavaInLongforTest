@@ -1,6 +1,8 @@
 import com.google.common.collect.Lists;
+import com.sun.javafx.logging.Logger;
 import com.sun.org.apache.bcel.internal.generic.ATHROW;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import one.util.streamex.StreamEx;
 import org.junit.Test;
 
@@ -13,8 +15,8 @@ import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class TestJavaStream {
-
 
     @Test
     public void testStream() {
@@ -51,8 +53,6 @@ public class TestJavaStream {
 //        );
         List<People> collect = StreamEx.of(people).reverseSorted(Comparator.comparing(People::getHeight)).collect(Collectors.toList());
         System.out.println("collect = " + collect);
-
-
     }
 
     @Test
@@ -82,6 +82,10 @@ public class TestJavaStream {
         Collection<List<People>> values = StreamEx.of(people).groupingBy(People::getHeight).values();
         System.out.println("values = " + values);
 
+        ArrayList<String> strings = Lists.newArrayList("BLUE_RECHARGE", "REMOTE_RECHARGE","REMOTE_RECHARGE");
+        List<String> strings1 = StreamEx.of(strings).reverseSorted().toList();
+        strings1.forEach(System.out::println);
+
     }
 
     @Test
@@ -108,12 +112,13 @@ public class TestJavaStream {
 //        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("^[0-9]{4}[-\\/]\\d+[-\\/]\\d+");
 //        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy[\\-\\/]+MM[\\-\\/]+dd");
 //        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy[-|\\/]MM[-|\\/]dd");
-        LocalDate parse = LocalDate.parse(date_1);
-        System.out.println("parse = " + parse);
-        LocalDate parse1 = LocalDate.parse(date_2);
-        System.out.println("parse1 = " + parse1);
+//        LocalDate parse = LocalDate.parse(date_1);
+//        System.out.println("parse = " + parse);
+//        LocalDate parse1 = LocalDate.parse(date_2);
+//        System.out.println("parse1 = " + parse1);
         LocalDateTime localDate = LocalDateTime.now().minusDays(1);
-        System.out.println("localDate = " + localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        System.out.println("localDate = " + localDate.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+        System.out.println("LocalDateTime.now().getMonth().toString() = " + LocalDateTime.now().getMonth().getValue());
 
         BigDecimal affectSchemerAmount = new BigDecimal(-2);
         BigDecimal finish = new BigDecimal(86.3);
@@ -122,6 +127,44 @@ public class TestJavaStream {
                 .setScale(2, BigDecimal.ROUND_HALF_EVEN);
 
         System.out.println("thiReceiptAccrualRate = " + thiReceiptAccrualRate);
+    }
+
+
+    @Test
+    public void testConvert(){
+        String s = "000000000827";
+        System.out.println("s1 = " + String.format("%08x", Integer.valueOf(s)));
+        List<String> strings = Arrays.asList("1", "2", "3");
+        strings.forEach(s1 -> {
+            System.out.println("s1_start = " + s1);
+            if(s1.equals("1")){
+                return;
+            }
+            System.out.println("s1_end = " + s1);
+        });
+
+    }
+
+    @Test
+    public void testNullAble(){
+        if (null == ThreadLocalAccrualHelper.get()) {
+            System.out.println("11111 ");
+            ThreadLocalAccrualHelper.set(true);
+        }
+        if (null == ThreadLocalAccrualHelper.get()) {
+            System.out.println("22222 ");
+        }
+        //对象为空和不为空时计算流程
+        if(Boolean.TRUE.equals(ThreadLocalAccrualHelper.get())){
+            System.out.println("ttttttt ");
+            ThreadLocalAccrualHelper.clear();
+        }
+        if(Boolean.TRUE.equals(ThreadLocalAccrualHelper.get())){
+            System.out.println("ttttttt====1111 ");
+            ThreadLocalAccrualHelper.clear();
+        }else {
+            System.out.println("===== " + ThreadLocalAccrualHelper.get());
+        }
     }
 
     @Data
